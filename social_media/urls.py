@@ -13,12 +13,19 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
-from django.urls import path
-from feeds.views import UserList
+from django.urls import path, include
+from feeds.views import FeedListView, HomeView, FeedDetailView
+from rest_framework.schemas import get_schema_view
+from rest_framework.documentation import include_docs_urls
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', UserList.as_view(), name="home"),
-    ]
+    path('api/v1/feeds/', FeedListView.as_view(), name="feed-list"),
+    path('api/v1/feeds/<int:feed_id>/', FeedDetailView.as_view(), name="feed-detail"),
+    path('api/v1/home/', HomeView.as_view(), name="api-home"),
+    path('api/v1/schema/', get_schema_view(title="API Schema", description="API for Social Media App", version="1.0.0"), name='openapi-schema'),
+    path('api/v1/docs/', include_docs_urls(title='Social Media API')),
+]
